@@ -9,7 +9,36 @@ th {
   font-weight: normal;
   border-collapse: collapse;
   padding-left: 1em;
+  padding-right: 1em;
   height:50px;
+}
+
+.thCheckbox {
+  width: 20px;
+  padding: 0;
+}
+
+.divActions {
+  width: 150px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.checkbox {
+  height: 20px;
+  width: 20px;
+  color: cornflowerblue;
+  margin: 14px 20px;
+}
+
+.edit {
+  background-color: darkmagenta;
+  width: 70px;
+}
+
+.delete {
+  background-color: crimson;
+  width: 70px
 }
 
 table {

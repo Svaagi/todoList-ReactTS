@@ -1,5 +1,4 @@
 .div {
-  padding: 5px 0px;
   display: flex;
   justify-content: space-between;
   padding: 20px 20px;
@@ -14,9 +13,29 @@
   padding-left: 20px;
 }
 
+.input {
+  height: 30px;
+  width: 400px;
+  display: flex
+}
+
 input {
   height: 30px;
-  width: 300px;
+  width: 250px;
+}
+.checkbox {
+  height: 20px;
+  width: 20px;
+  color: cornflowerblue;
+  margin: 14px 20px;
+}
+
+textarea {
+  padding: 5px 0px;
+  padding: 0;
+  width: 700px;
+  height: 100px;
+  font-size: 15px;
 }
 
 button {
@@ -24,4 +43,5 @@ button {
   background-color: cornflowerblue;
   border: none;
   color: white;
+  cursor: pointer;
 }

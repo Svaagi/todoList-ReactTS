@@ -7,10 +7,12 @@ import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 
 
-interface Todo{
+interface Todo {
     name: string,
     description: string,
     status: string
+    edit: boolean
+    delete: boolean
   }
 
 
@@ -21,21 +23,43 @@ const TodoForm: FC = () => {
 // states
   const [name, setName] = useState('')
 
+  const [desc, setDesc] = useState('')
+
   const [todoData, setTodoData] = useState<Todo[]>([])
+
+  const [checked, setChecked] = useState(false)
+
+  const [descTable, setDescTable] = useState(false)
 
 // functions
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value)
   }
 
+  const handleTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setDesc(e.target.value)
+  }
+
+  const handleCheck = () => {
+    setChecked(!checked)
+  }
+
+
   const handleAdd = () => {
     if (name !== '') {
       const newTodo: Todo = {
         name: name,
-        description: '',
-        status: 'incomplete'
+        description: desc,
+        status: 'incomplete',
+        edit: false,
+        delete: false
       }
+      setDesc('')
       setTodoData([...todoData, newTodo])
+      if (desc !== '') {
+        setDescTable(true)
+      }
+      console.log(descTable)
       setName('')
     }
   }
@@ -44,13 +68,19 @@ const TodoForm: FC = () => {
     <>
       <div style={{paddingTop: '20px'}}>
         <div className='div'>
-          <input value={name} placeholder='Add todo' onChange={handleInput}/>
-          <button onClick={handleAdd}>Add</button>
+          <div className='input'>
+            <input value={name} placeholder='Add todo' onChange={handleInput}/>
+            <button onClick={handleAdd}>Add</button>
+            <input className='checkbox' type='checkbox' title={'Add description'} onClick={handleCheck}/>
+          </div>
           <Dropdown className='dropdown' options={filterOptions} placeholder="Select an option" />
           <button>Filter</button>
         </div>
+        {checked ? <div className='div'>
+          <textarea placeholder='Add description' onChange={handleTextArea} value={desc}></textarea>
+        </div> : null}
         <div style={{paddingTop: '20px'}}>
-          <TodoList todoData={todoData}/>
+          <TodoList todoData={todoData} setTodoData={setTodoData} descTable = {descTable}/>
         </div>
       </div>
     </>
