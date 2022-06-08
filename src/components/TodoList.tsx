@@ -22,7 +22,6 @@ interface Props {
 }
 
  const TodoList: FC<Props> = ({ todoData, setTodoData, descTable }) => {
-  const [todos, setTodos] = useState(todoData)
 
   const [complete, setComplete] = useState(true)
 
