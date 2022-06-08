@@ -1,0 +1,27 @@
+.div {
+  padding: 5px 0px;
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 20px;
+  border: 1px solid #ccc;
+  max-width: 700px;
+  margin: auto;
+}
+
+.dropdown {
+  width: 300px;
+  height: 40px;
+  padding-left: 20px;
+}
+
+input {
+  height: 30px;
+  width: 300px;
+}
+
+button {
+  height: 35px;
+  background-color: cornflowerblue;
+  border: none;
+  color: white;
+}
