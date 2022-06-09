@@ -2,7 +2,8 @@ import { FC, useState } from 'react'
 import '../styles/TodoList.scss'
 
 interface Todo {
-  name: string,
+    id: number,
+    name: string,
     description: string,
     status: string,
     edit: boolean,
@@ -11,6 +12,7 @@ interface Todo {
 
 interface Props {
   todoData: {
+    id: number,
     name: string,
     description: string,
     status: string,
@@ -35,21 +37,42 @@ interface Props {
     }
   }
 
-  const handleEdit = (e: any, index: number) => {
-    
-  }
-
   const handleEditButton = (index: number) => {
-    
+    setTodoData((prevTodoData) =>
+      prevTodoData.map((todo) => {
+        return todo.id === index ? { ...todo, edit: !todo.edit } : todo;
+      }),
+    );
+  };
+
+  const handleEdit = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    setTodoData((prevTodoData) =>
+      prevTodoData.map((todo) => {
+        return todo.id === index ? { ...todo, name: e.target.value } : todo;
+      }),
+    );
   }
 
   const handleDelete = (index: number) => {
+    if (todoData[index].status !== 'softdeleted') {
+    setTodoData((prevTodoData) =>
+      prevTodoData.map((todo) => {
+         return todo.id === index ? { ...todo, status: 'softdeleted' } : todo;
+      }),
+    );
+    } else {
+      setTodoData((prevTodoData) =>
+      prevTodoData.filter((todo) => todo.id !== todoData[index].id),
+    );
+    }
   }
 
   const todoTables = todoData.map((todo, index) => (
     <tr key={index}>
-      <th className='thCheckbox'><input className='checkbox' type='checkbox' onClick={() => handleComplete(index)}/></th>
-      {todo.edit ? <th>{todo.name}</th> : <th><input defaultValue={todo.name} onClick={(e) => handleEdit(e, index)}/></th>}
+      <th className='thCheckbox'>
+        <input className='checkbox' type='checkbox' onClick={() => handleComplete(index)}/>
+      </th>
+      {todo.edit ? <th>{todo.name}</th> : <th><input defaultValue={todo.name} onChange={(e) => handleEdit(e, index)}/></th>}
       {descTable ? <th>{todo.description}</th> : null}
       <th>{todo.status}</th>
       <th>

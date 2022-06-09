@@ -8,6 +8,7 @@ import 'react-dropdown/style.css';
 
 
 interface Todo {
+    id: number,
     name: string,
     description: string,
     status: string
@@ -44,14 +45,17 @@ const TodoForm: FC = () => {
     setChecked(!checked)
   }
 
+  console.log(todoData)
+
 
   const handleAdd = () => {
     if (name !== '') {
       const newTodo: Todo = {
+        id: todoData.length,
         name: name,
         description: desc,
         status: 'incomplete',
-        edit: false,
+        edit: true,
         delete: false
       }
       setDesc('')
