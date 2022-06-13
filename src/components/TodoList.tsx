@@ -1,8 +1,7 @@
-import { FC, useState } from 'react'
+import { FC } from 'react'
 import '../styles/TodoList.scss'
 
 interface Todo {
-    id: number,
     name: string,
     description: string,
     status: string,
@@ -12,7 +11,6 @@ interface Todo {
 
 interface Props {
   todoData: {
-    id: number,
     name: string,
     description: string,
     status: string,
@@ -20,60 +18,122 @@ interface Props {
     delete: boolean
   }[],
   setTodoData: React.Dispatch<React.SetStateAction<Todo[]>>,
-  descTable: boolean
+  descTable: boolean,
+  filterValue: string
 }
 
- const TodoList: FC<Props> = ({ todoData, setTodoData, descTable }) => {
+ const TodoList: FC<Props> = ({ todoData, setTodoData, descTable, filterValue }) => {
 
-  const [complete, setComplete] = useState(true)
-
+/**
+ * 
+ * @param index index of the todo in the array
+ */
   const handleComplete = (index: number) => {
-    setComplete(!complete)
-    if (complete) {
-      todoData[index].status = 'completed'
-    }
-    else {
-      todoData[index].status = 'incomplete'
-    }
+    setTodoData((prevTodoData) =>
+      prevTodoData.map((todo, id) => {
+        if (todo.status === 'incomplete') {
+          return id === index ? { ...todo, status: 'completed' } : todo;
+        }
+        else {
+          return id === index ? { ...todo, status: 'incomplete' } : todo;
+        }
+      }),
+    );
   }
 
+  /**
+   * 
+   * @param index index of the todo in the array
+   */
   const handleEditButton = (index: number) => {
     setTodoData((prevTodoData) =>
-      prevTodoData.map((todo) => {
-        return todo.id === index ? { ...todo, edit: !todo.edit } : todo;
+      prevTodoData.map((todo, id) => {
+        return id === index ? { ...todo, edit: !todo.edit } : todo;
       }),
     );
   };
 
+  /**
+   * 
+   * @param e event
+   * @param index index of the todo in the array
+   */
   const handleEdit = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     setTodoData((prevTodoData) =>
-      prevTodoData.map((todo) => {
-        return todo.id === index ? { ...todo, name: e.target.value } : todo;
+      prevTodoData.map((todo, id) => {
+        return id === index ? { ...todo, name: e.target.value } : todo;
       }),
     );
   }
 
-  const handleDelete = (index: number) => {
-    if (todoData[index].status !== 'softdeleted') {
+  /**
+   * 
+   * @param e event of the textarea
+   * @param index index of the todo in the array
+   */
+  const handleEditDescription = (e: React.ChangeEvent<HTMLTextAreaElement>, index: number) => {
     setTodoData((prevTodoData) =>
-      prevTodoData.map((todo) => {
-         return todo.id === index ? { ...todo, status: 'softdeleted' } : todo;
+      prevTodoData.map((todo, id) => {
+        return id === index ? { ...todo, description: e.target.value } : todo;
+      }),
+    );
+  }
+
+  /**
+   * 
+   * @param index index of the todo in the array
+   */
+  const handleDelete = (index: number) => {
+    if (todoData[index].status !== 'softdeleted' && todoData[index].status !== 'completed') {
+    setTodoData((prevTodoData) =>
+      prevTodoData.map((todo, id) => {
+         return id === index ? { ...todo, status: 'softdeleted' } : todo;
       }),
     );
     } else {
       setTodoData((prevTodoData) =>
-      prevTodoData.filter((todo) => todo.id !== todoData[index].id),
+      prevTodoData.filter((todo) => todo !== todoData[index]),
     );
     }
   }
 
-  const todoTables = todoData.map((todo, index) => (
+  /**
+   * 
+   * @param todo todo to be edited
+   * @param index index of the todo in the array
+   * @returns edit for todo description or todo description
+   */
+  const descEdit = (todo: Todo, index: number) => {
+    if (descTable && todo.edit) {
+      return (
+        <th style={{padding: 0}}>
+          <textarea className='editTextarea' value={todo.description} onChange={(e) => handleEditDescription(e, index)}></textarea>
+        </th>
+      )
+    }
+    else if (descTable && todo.edit === false) {
+      return (
+        <th>{todo.description}</th>
+      )
+    }
+    else {
+      return null
+    }
+  }
+
+  /**
+   * @param todo todo to be returned
+   * @param index index of the todo in the array
+   * @param filterValue value of the filter that checks if the todo matches the filter
+   * @returns table of todos
+   */
+  const todoTables = todoData.map((todo, index) => (filterValue === 'all' || filterValue === todo.status) && (
     <tr key={index}>
       <th className='thCheckbox'>
         <input className='checkbox' type='checkbox' onClick={() => handleComplete(index)}/>
       </th>
-      {todo.edit ? <th>{todo.name}</th> : <th><input defaultValue={todo.name} onChange={(e) => handleEdit(e, index)}/></th>}
-      {descTable ? <th>{todo.description}</th> : null}
+      {todo.edit ? <th style={{padding: 0}}><input className='editName' defaultValue={todo.name} onChange={(e) => handleEdit(e, index)}/></th> : <th>{todo.name}</th>}
+      {descEdit(todo, index)}
       <th>{todo.status}</th>
       <th>
         <div className='divActions'><button className='edit' onClick={() => handleEditButton(index)}>

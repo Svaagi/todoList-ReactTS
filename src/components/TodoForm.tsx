@@ -8,7 +8,6 @@ import 'react-dropdown/style.css';
 
 
 interface Todo {
-    id: number,
     name: string,
     description: string,
     status: string
@@ -32,11 +31,22 @@ const TodoForm: FC = () => {
 
   const [descTable, setDescTable] = useState(false)
 
+  const [filterValue, setFilterValue] = useState('all')
+
 // functions
+
+  /**
+   * 
+   * @param e event - name of the todo
+   */
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value)
   }
 
+  /**
+   * 
+   * @param e event - description of the todo
+   */
   const handleTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDesc(e.target.value)
   }
@@ -45,17 +55,21 @@ const TodoForm: FC = () => {
     setChecked(!checked)
   }
 
-  console.log(todoData)
-
+  /**
+   * 
+   * @param e event - filter value
+   */
+  const handleFilter = (e: any) => {
+    setFilterValue(e.value)
+  }
 
   const handleAdd = () => {
     if (name !== '') {
       const newTodo: Todo = {
-        id: todoData.length,
         name: name,
         description: desc,
         status: 'incomplete',
-        edit: true,
+        edit: false,
         delete: false
       }
       setDesc('')
@@ -63,7 +77,6 @@ const TodoForm: FC = () => {
       if (desc !== '') {
         setDescTable(true)
       }
-      console.log(descTable)
       setName('')
     }
   }
@@ -77,14 +90,13 @@ const TodoForm: FC = () => {
             <button onClick={handleAdd}>Add</button>
             <input className='checkbox' type='checkbox' title={'Add description'} onClick={handleCheck}/>
           </div>
-          <Dropdown className='dropdown' options={filterOptions} placeholder="Select an option" />
-          <button>Filter</button>
+          <Dropdown className='dropdown' value={filterValue} onChange={(e) => handleFilter(e)} options={filterOptions} placeholder="Select an option" />
         </div>
         {checked ? <div className='div'>
           <textarea placeholder='Add description' onChange={handleTextArea} value={desc}></textarea>
         </div> : null}
         <div style={{paddingTop: '20px'}}>
-          <TodoList todoData={todoData} setTodoData={setTodoData} descTable = {descTable}/>
+          <TodoList todoData={todoData} setTodoData={setTodoData} descTable={descTable} filterValue={filterValue}/>
         </div>
       </div>
     </>
